@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>הכלים שלי</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1e40af">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="הכלים שלי">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMxZTQwYWYiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik05IDEyaDZtLTYtNGg2bTQgMTJINWEyIDIgMCAwIDEtMi0yVjZhMiAyIDAgMCAxIDItMmgxNGEyIDIgMCAwIDEgMiAydjEyYTIgMiAwIDAgMS0yIDJ6Ii8+Cjwvc3ZnPgo8L3N2Zz4K">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMxZTQwYWYiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik05IDEyaDZtLTYtNGg2bTQgMTJINWEyIDIgMCAwIDEtMi0yVjZhMiAyIDAgMCAxIDItMmgxNGEyIDIgMCAwIDEgMiAydjEyYTIgMiAwIDAgMS0yIDJ6Ii8+Cjwvc3ZnPgo8L3N2Zz4K">
+    
+    <!-- Manifest -->
+    <link rel="manifest" id="manifest-placeholder">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for mobile optimization */
+        body {
+            overscroll-behavior: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        input, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+        
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .project-card {
+            aspect-ratio: 2.5/1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .admin-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        /* Code editor styles */
+        .code-editor {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #f8f8f2;
+            border-radius: 8px;
+            padding: 16px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+    <div id="app"></div>
+
+    <script>
+        // PWA Manifest generation
+        const manifest = {
+            name: "הכלים שלי",
+            short_name: "כלים",
+            description: "אפליקציית כלים אישיים",
+            start_url: "/",
+            display: "standalone",
+            background_color: "#1e40af",
+            theme_color: "#1e40af",
+            orientation: "portrait",
+            icons: [
+                {
+                    src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMxZTQwYWYiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik05IDEyaDZtLTYtNGg2bTQgMTJINWEyIDIgMCAwIDEtMi0yVjZhMiAyIDAgMCAxIDItMmgxNGEyIDIgMCAwIDEgMiAydjEyYTIgMiAwIDAgMS0yIDJ6Ii8+Cjwvc3ZnPgo8L3N2Zz4K",
+                    sizes: "192x192",
+                    type: "image/svg+xml"
+                },
+                {
+                    src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iNjQiIGZpbGw9IiMxZTQwYWYiLz4KPHN2ZyB4PSIxMjgiIHk9IjEyOCIgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPgo8cGF0aCBkPSJNOSAxMmg2bS02LTRoNm00IDEySDVhMiAyIDAgMCAxLTItMlY2YTIgMiAwIDAgMSAyLTJoMTRhMiAyIDAgMCAxIDIgMnYxMmEyIDIgMCAwIDEtMiAyeiIvPgo8L3N2Zz4KPC9zdmc+Cg==",
+                    sizes: "512x512",
+                    type: "image/svg+xml"
+                }
+            ]
+        };
+        
+        const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        document.getElementById('manifest-placeholder').href = manifestURL;
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    const CACHE_NAME = 'personal-tools-v1';
+                    
+                    self.addEventListener('install', (event) => {
+                        self.skipWaiting();
+                    });
+                    
+                    self.addEventListener('activate', (event) => {
+                        event.waitUntil(clients.claim());
+                    });
+                    
+                    self.addEventListener('fetch', (event) => {
+                        // Simple pass-through for now
+                        event.respondWith(fetch(event.request));
+                    });
+                `;
+                
+                const swBlob = new Blob([swCode], {type: 'application/javascript'});
+                const swUrl = URL.createObjectURL(swBlob);
+                
+                navigator.serviceWorker.register(swUrl)
+                    .then(registration => {
+                        console.log('SW registered successfully');
+                    })
+                    .catch(error => {
+                        console.log('SW registration failed');
+                    });
+            });
+        }
+
+        // Main App Class
+        class PersonalToolsApp {
+            constructor() {
+                this.currentView = 'home';
+                this.adminMode = false;
+                this.projects = this.loadProjects();
+                this.characters = JSON.parse(localStorage.getItem('dndCharacters') || '[]');
+                this.items = JSON.parse(localStorage.getItem('dndItems') || '[]');
+                this.selectedCharacter = null;
+                this.showAddItem = false;
+                this.searchTerm = '';
+                
+                this.init();
+            }
+            
+            loadProjects() {
+                const defaultProjects = [
+                    {
+                        id: 'dnd-carrycap',
+                        title: 'D&D CarryCap Master',
+                        description: 'ניהול כרטיסיות דמויות וחפצים',
+                        emoji: '⚔️',
+                        image: null,
+                        code: null,
+                        type: 'builtin'
+                    }
+                ];
+                
+                const saved = localStorage.getItem('customProjects');
+                const customProjects = saved ? JSON.parse(saved) : [];
+                
+                return [...defaultProjects, ...customProjects];
+            }
+            
+            saveProjects() {
+                const customProjects = this.projects.filter(p => p.type !== 'builtin');
+                localStorage.setItem('customProjects', JSON.stringify(customProjects));
+            }
+            
+            init() {
+                this.render();
+                this.bindEvents();
+                
+                // Add install prompt
+                this.setupInstallPrompt();
+            }
+            
+            setupInstallPrompt() {
+                let deferredPrompt;
+                
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    
+                    // Show install button
+                    const installBtn = document.createElement('button');
+                    installBtn.className = 'fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm';
+                    installBtn.innerHTML = '📱 התקן אפליקציה';
+                    installBtn.onclick = () => {
+                        if (deferredPrompt) {
+                            deferredPrompt.prompt();
+                            deferredPrompt.userChoice.then(() => {
+                                deferredPrompt = null;
+                                installBtn.remove();
+                            });
+                        }
+                    };
+                    
+                    document.body.appendChild(installBtn);
+                    
+                    // Auto-hide after 10 seconds
+                    setTimeout(() => {
+                        if (installBtn.parentNode) {
+                            installBtn.remove();
+                        }
+                    }, 10000);
+                });
+            }
+            
+            bindEvents() {
+                // Prevent zoom on double tap
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', function (event) {
+                    const now = (new Date()).getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, false);
+            }
+            
+            render() {
+                const app = document.getElementById('app');
+                let content = '';
+                
+                switch(this.currentView) {
+                    case 'home':
+                        content = this.renderHome();
+                        break;
+                    case 'admin':
+                        content = this.renderAdmin();
+                        break;
+                    case 'dnd-master':
+                        content = this.renderDNDMaster();
+                        break;
+                    case 'character-detail':
+                        content = this.renderCharacterDetail();
+                        break;
+                    default:
+                        content = this.renderCustomProject();
+                }
+                
+                app.innerHTML = content;
+                this.bindCurrentViewEvents();
+            }
+            
+            renderHome() {
+                return `
+                    <div class="min-h-screen bg-gradient-to-br from-blue-900 to-purple-900 p-4 pb-20">
+                        <div class="max-w-md mx-auto">
+                            <div class="flex items-center justify-between mb-8">
+                                <h1 class="text-3xl font-bold text-white">הכלים שלי</h1>
+                                <button onclick="app.toggleAdmin()" class="text-white/60 hover:text-white p-2">
+                                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1c0 .33.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                ${this.projects.map(project => `
+                                    <div
+                                        class="project-card glass-effect rounded-xl p-6 cursor-pointer transform transition-all hover:scale-105 active:scale-95 ${project.image ? '' : 'bg-white/10'}"
+                                        style="${project.image ? `background-image: url(${project.image})` : ''}"
+                                        onclick="app.openProject('${project.id}')"
+                                    >
+                                        <div class="flex items-center justify-between h-full ${project.image ? 'bg-black/30 rounded-lg p-4' : ''}">
+                                            <div class="flex-1">
+                                                ${project.emoji ? `<div class="text-4xl mb-2">${project.emoji}</div>` : ''}
+                                                <h3 class="text-xl font-bold text-white mb-1">${project.title}</h3>
+                                                <p class="text-white/80 text-sm">${project.description}</p>
+                                            </div>
+                                            <svg class="text-white/60" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41Z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            renderAdmin() {
+                return `
+                    <div class="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 p-4 pb-20">
+                        <div class="max-w-md mx-auto">
+                            <div class="flex items-center justify-between mb-6">
+                                <button onclick="app.setView('home')" class="text-white hover:text-gray-300 transition-colors">
+                                    ← חזור
+                                </button>
+                                <h1 class="text-2xl font-bold text-white">ניהול פרויקטים</h1>
+                                <div></div>
+                            </div>
+                            
+                            <!-- Add New Project -->
+                            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-6">
+                                <h3 class="text-lg font-bold text-white mb-4">הוסף פרויקט חדש</h3>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-white/80 mb-1">שם הפרויקט</label>
+                                        <input type="text" id="projectTitle" placeholder="הכנס שם פרויקט..." 
+                                               class="w-full px-3 py-2 bg-white/20 text-white rounded-lg border border-white/30 placeholder-white/50">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-white/80 mb-1">תיאור</label>
+                                        <input type="text" id="projectDescription" placeholder="תיאור קצר..." 
+                                               class="w-full px-3 py-2 bg-white/20 text-white rounded-lg border border-white/30 placeholder-white/50">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-white/80 mb-1">אימוג'י (אופציונלי)</label>
+                                        <input type="text" id="projectEmoji" placeholder="🔧" maxlength="2"
+                                               class="w-full px-3 py-2 bg-white/20 text-white rounded-lg border border-white/30 placeholder-white/50">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-white/80 mb-1">תמונת רקע</label>
+                                        <div class="relative bg-white/20 rounded-lg border-2 border-dashed border-white/30 p-4 text-center">
+                                            <input type="file" accept="image/*" id="projectImage" class="file-input">
+                                            <div class="text-white/60">
+                                                <svg class="mx-auto mb-2" width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                                </svg>
+                                                לחץ כדי להעלות תמונה
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-white/80 mb-1">קוד הפרויקט</label>
+                                        <div class="relative bg-white/20 rounded-lg border-2 border-dashed border-white/30 p-4 text-center">
+                                            <input type="file" accept=".html,.js,.htm" id="projectCode" class="file-input">
+                                            <div class="text-white/60">
+                                                <svg class="mx-auto mb-2" width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M8,3A2,2 0 0,0 6,5V9A2,2 0 0,1 4,11H3V13H4A2,2 0 0,1 6,15V19A2,2 0 0,0 8,21H10V19H8V14A2,2 0 0,0 6,12A2,2 0 0,0 8,10V5H10V3H8M16,3A2,2 0 0,1 18,5V9A2,2 0 0,0 20,11H21V13H20A2,2 0 0,0 18,15V19A2,2 0 0,1 16,21H14V19H16V14A2,2 0 0,1 18,12A2,2 0 0,1 16,10V5H14V3H16Z"/>
+                                                </svg>
+                                                העלה קובץ HTML/JS
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <button onclick="app.addProject()" 
+                                            class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl p-3 transition-colors">
+                                        הוסף פרויקט
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Existing Projects -->
+                            <div class="space-y-3">
+                                <h3 class="text-lg font-bold text-white">פרויקטים קיימים</h3>
+                                ${this.projects.map(project => `
+                                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            ${project.emoji ? `<span class="text-2xl">${project.emoji}</span>` : ''}
+                                            <div>
+                                                <div class="text-white font-medium">${project.title}</div>
+                                                <div class="text-white/60 text-sm">${project.description}</div>
+                                            </div>
+                                        </div>
+                                        ${project.type !== 'builtin' ? `
+                                            <button onclick="app.deleteProject('${project.id}')" 
+                                                    class="text-red-400 hover:text-red-300 p-1">
+                                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+                                                </svg>
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            renderDNDMaster() {
+                return `
+                    <div class="min-h-screen bg-gradient-to-br from-green-800 to-blue-800 p-4 pb-20">
+                        <div class="max-w-md mx-auto">
+                            <div class="flex items-center justify-between mb-6">
+                                <button onclick="app.setView('home')" class="text-white hover:text-green-200 transition-colors">
+                                    ← חזור
+                                </button>
+                                <h1 class="text-2xl font-bold text-white">D&D CarryCap Master</h1>
+                                <div></div>
+                            </div>
+
+                            <div class="space-y-4 mb-6 custom-scrollbar" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+                                ${this.characters.map(character => {
+                                    const totalWeight = this.calculateTotalWeight(character.items);
+                                    const carryingCapacity = this.calculateCarryingCapacity(character.strength);
+                                    const encumbrance = this.getEncumbranceStatus(character.strength, totalWeight);
+                                    
+                                    return `
+                                        <div onclick="app.selectCharacter('${character.id}')"
+                                             class="glass-effect rounded-xl p-4 cursor-pointer hover:bg-white/20 transition-colors active:scale-95">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <h3 class="text-lg font-bold text-white">${character.name}</h3>
+                                                <svg class="text-white/60" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                                                </svg>
+                                            </div>
+                                            
+                                            <div class="text-white/80 text-sm space-y-1">
+                                                <div>כוח: ${character.strength}</div>
+                                                <div>קיבולת נשיאה: ${carryingCapacity.toFixed(1)} ק"ג</div>
+                                                <div>משקל נישא: ${totalWeight.toFixed(1)} ק"ג</div>
+                                            </div>
+                                            
+                                            ${encumbrance.level !== 'normal' ? `
+                                                <div class="mt-2 p-2 rounded-lg flex items-center gap-2 text-sm ${
+                                                    encumbrance.level === 'extreme' ? 'bg-red-500/20 text-red-200' :
+                                                    encumbrance.level === 'heavy' ? 'bg-orange-500/20 text-orange-200' :
+                                                    'bg-yellow-500/20 text-yellow-200'
+                                                }">
+                                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M1,21H23L12,2M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"/>
+                                                    </svg>
+                                                    ${encumbrance.message}
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <button onclick="app.addNewCharacter()" 
+                                    class="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl p-4 flex items-center justify-center gap-2 transition-colors active:scale-95">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                                </svg>
+                                הוסף דמות חדשה
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            renderCharacterDetail() {
+                if (!this.selectedCharacter) return '';
+                
+                const totalWeight = this.calculateTotalWeight(this.selectedCharacter.items);
+                const carryingCapacity = this.calculateCarryingCapacity(this.selectedCharacter.strength);
+                const encumbrance = this.getEncumbranceStatus(this.selectedCharacter.strength, totalWeight);
+                
+                return `
+                    <div class="min-h-screen bg-gradient-to-br from-purple-800 to-blue-800 p-4 pb-20">
+                        <div class="max-w-md mx-auto">
+                            <div class="flex items-center justify-between mb-6">
+                                <button onclick="app.setView('dnd-master')" class="text-white hover:text-purple-200 transition-colors">
+                                    ← חזור
+                                </button>
+                                <button onclick="app.deleteCharacter()" class="text-red-400 hover:text-red-300 transition-colors">
+                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="glass-effect rounded-xl p-4 mb-4">
+                                <!-- Character Name -->
+                                <div class="flex items-center gap-2 mb-4">
+                                    <input type="text" value="${this.selectedCharacter.name}" 
+                                           onchange="app.updateCharacterName(this.value)"
+                                           class="text-xl font-bold bg-transparent text-white flex-1 border-b border-white/30 focus:border-white outline-none pb-1">
+                                    <svg class="text-white/60" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                                    </svg>
+                                </div>
+
+                                <!-- Strength -->
+                                <div class="flex items-center gap-2 mb-4">
+                                    <span class="text-white/80">כוח:</span>
+                                    <input type="number" value="${this.selectedCharacter.strength}" 
+                                           onchange="app.updateCharacterStrength(parseInt(this.value))"
+                                           class="bg-white/20 text-white rounded px-2 py-1 w-16 text-center outline-none">
+                                    <svg class="text-white/60" width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                                    </svg>
+                                </div>
+
+                                <!-- Carrying Capacity -->
+                                <div class="text-white/80 text-sm mb-2">
+                                    קיבולת נשיאה: <span class="font-bold text-white">${carryingCapacity.toFixed(1)} ק"ג</span>
+                                </div>
+                                <div class="text-white/80 text-sm mb-4">
+                                    משקל נישא: <span class="font-bold text-white">${totalWeight.toFixed(1)} ק"ג</span>
+                                </div>
+
+                                <!-- Encumbrance Alert -->
+                                ${encumbrance.level !== 'normal' ? `
+                                    <div class="p-3 rounded-lg flex items-center gap-2 text-sm mb-4 ${
+                                        encumbrance.level === 'extreme' ? 'bg-red-500/20 text-red-200' :
+                                        encumbrance.level === 'heavy' ? 'bg-orange-500/20 text-orange-200' :
+                                        'bg-yellow-500/20 text-yellow-200'
+                                    }">
+                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M1,21H23L12,2M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"/>
+                                        </svg>
+                                        ${encumbrance.message}
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <!-- Items List -->
+                            <div class="glass-effect rounded-xl p-4 mb-4">
+                                <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                                    </svg>
+                                    חפצים
+                                </h3>
+                                
+                                ${this.selectedCharacter.items.length === 0 ? `
+                                    <p class="text-white/60 text-center py-4">אין חפצים</p>
+                                ` : `
+                                    <div class="space-y-2 custom-scrollbar" style="max-height: 300px; overflow-y: auto;">
+                                        ${this.selectedCharacter.items.map((item, index) => `
+                                            <div class="flex items-center justify-between bg-white/10 rounded-lg p-3">
+                                                <div>
+                                                    <div class="text-white font-medium">${item.name}</div>
+                                                    <div class="text-white/60 text-sm">${item.weight} ק"ג</div>
+                                                </div>
+                                                <button onclick="app.removeItem(${index})" 
+                                                        class="text-red-400 hover:text-red-300 transition-colors p-1">
+                                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                `}
+                            </div>
+
+                            <button onclick="app.showAddItemModal()" 
+                                    class="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-xl p-4 flex items-center justify-center gap-2 transition-colors active:scale-95">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                                </svg>
+                                הוסף חפץ
+                            </button>
+                        </div>
+                    </div>
+                    
+                    ${this.showAddItem ? this.renderAddItemModal() : ''}
+                `;
+            }
+            
+            renderAddItemModal() {
+                const filteredItems = this.items.filter(item =>
+                    item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+                );
+                
+                return `
+                    <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 slide-up">
+                        <div class="bg-white rounded-xl p-6 w-full max-w-md max-h-[80vh] overflow-hidden flex flex-col">
+                            <h3 class="text-lg font-bold mb-4 text-gray-800">הוסף חפץ</h3>
+                            
+                            <div class="relative mb-4">
+                                <svg class="absolute right-3 top-3 text-gray-400" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                                </svg>
+                                <input type="text" placeholder="חפש חפץ..." 
+                                       value="${this.searchTerm}"
+                                       oninput="app.updateSearchTerm(this.value)"
+                                       class="w-full pr-10 pl-4 py-2 border rounded-lg text-gray-800">
+                            </div>
+                            
+                            <div class="flex-1 overflow-y-auto custom-scrollbar space-y-2 mb-4" style="max-height: 300px;">
+                                ${filteredItems.map(item => `
+                                    <button onclick="app.addItemToCharacter('${item.id}')"
+                                            class="w-full text-right p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+                                        <div class="font-medium text-gray-800">${item.name}</div>
+                                        <div class="text-sm text-gray-600">${item.weight} ק"ג</div>
+                                    </button>
+                                `).join('')}
+                                
+                                <button onclick="app.showCreateNewItem()"
+                                        class="w-full p-3 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors">
+                                    יצירת חפץ חדש
+                                </button>
+                            </div>
+                            
+                            <button onclick="app.hideAddItemModal()"
+                                    class="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+                                ביטול
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            renderCustomProject() {
+                const project = this.projects.find(p => p.id === this.currentView);
+                if (!project || !project.code) {
+                    return `
+                        <div class="min-h-screen bg-gradient-to-br from-red-800 to-gray-800 p-4 flex items-center justify-center">
+                            <div class="text-white text-center">
+                                <h2 class="text-2xl font-bold mb-4">שגיאה</h2>
+                                <p class="mb-4">לא ניתן לטעון את הפרויקט</p>
+                                <button onclick="app.setView('home')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                    חזור הביתה
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="min-h-screen">
+                        <div class="fixed top-0 left-0 right-0 bg-black/80 backdrop-blur-sm p-2 z-50 flex items-center justify-between">
+                            <button onclick="app.setView('home')" 
+                                    class="text-white hover:text-gray-300 px-3 py-2 rounded-lg bg-white/10">
+                                ← חזור
+                            </button>
+                            <h1 class="text-white font-bold">${project.title}</h1>
+                            <div class="w-16"></div>
+                        </div>
+                        <div class="pt-14">
+                            <iframe srcdoc="${project.code}" 
+                                    class="w-full h-screen border-0" 
+                                    sandbox="allow-scripts allow-same-origin">
+                            </iframe>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            bindCurrentViewEvents() {
+                // Bind events specific to current view
+                if (this.currentView === 'admin') {
+                    this.bindAdminEvents();
+                }
+            }
+            
+            bindAdminEvents() {
+                const imageInput = document.getElementById('projectImage');
+                const codeInput = document.getElementById('projectCode');
+                
+                if (imageInput) {
+                    imageInput.addEventListener('change', (e) => {
+                        if (e.target.files[0]) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                                this.selectedImage = event.target.result;
+                            };
+                            reader.readAsDataURL(e.target.files[0]);
+                        }
+                    });
+                }
+                
+                if (codeInput) {
+                    codeInput.addEventListener('change', (e) => {
+                        if (e.target.files[0]) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                                this.selectedCode = event.target.result;
+                            };
+                            reader.readAsText(e.target.files[0]);
+                        }
+                    });
+                }
+            }
+            
+            // Navigation methods
+            setView(view) {
+                this.currentView = view;
+                this.render();
+            }
+            
+            toggleAdmin() {
+                this.adminMode = !this.adminMode;
+                this.setView(this.adminMode ? 'admin' : 'home');
+            }
+            
+            openProject(projectId) {
+                if (projectId === 'dnd-carrycap') {
+                    this.setView('dnd-master');
+                } else {
+                    this.currentView = projectId;
+                    this.render();
+                }
+            }
+            
+            // Project management methods
+            addProject() {
+                const title = document.getElementById('projectTitle').value;
+                const description = document.getElementById('projectDescription').value;
+                const emoji = document.getElementById('projectEmoji').value;
+                
+                if (!title.trim()) {
+                    alert('נא להזין שם פרויקט');
+                    return;
+                }
+                
+                if (!this.selectedCode) {
+                    alert('נא להעלות קובץ קוד');
+                    return;
+                }
+                
+                const newProject = {
+                    id: 'project-' + Date.now(),
+                    title: title.trim(),
+                    description: description.trim() || 'פרויקט מותאם אישית',
+                    emoji: emoji.trim(),
+                    image: this.selectedImage || null,
+                    code: this.selectedCode,
+                    type: 'custom'
+                };
+                
+                this.projects.push(newProject);
+                this.saveProjects();
+                
+                // Reset form
+                document.getElementById('projectTitle').value = '';
+                document.getElementById('projectDescription').value = '';
+                document.getElementById('projectEmoji').value = '';
+                document.getElementById('projectImage').value = '';
+                document.getElementById('projectCode').value = '';
+                this.selectedImage = null;
+                this.selectedCode = null;
+                
+                alert('פרויקט נוסף בהצלחה!');
+                this.render();
+            }
+            
+            deleteProject(projectId) {
+                if (confirm('האם אתה בטוח שברצונך למחוק את הפרויקט?')) {
+                    this.projects = this.projects.filter(p => p.id !== projectId);
+                    this.saveProjects();
+                    this.render();
+                }
+            }
+            
+            // D&D Character methods
+            calculateCarryingCapacity(strengthScore) {
+                return strengthScore * 15 * 0.453592;
+            }
+            
+            calculateTotalWeight(characterItems) {
+                return characterItems.reduce((total, item) => total + item.weight, 0);
+            }
+            
+            getEncumbranceStatus(strengthScore, totalWeight) {
+                const strengthInKg = strengthScore * 0.453592;
+                
+                if (totalWeight > 15 * strengthInKg) {
+                    return { level: 'extreme', message: 'עומס יתר - מהירות אפס, כישלון אוטומטי בבדיקות' };
+                } else if (totalWeight > 10 * strengthInKg) {
+                    return { level: 'heavy', message: 'עומס חמור - מהירות ירדה ב-20 רגל, חסרון בבדיקות' };
+                } else if (totalWeight > 5 * strengthInKg) {
+                    return { level: 'medium', message: 'עומס - מהירות התנועה יורדת ב-10 רגל' };
+                }
+                return { level: 'normal', message: 'מצב תקין' };
+            }
+            
+            addNewCharacter() {
+                const newCharacter = {
+                    id: 'char-' + Date.now(),
+                    name: 'דמות חדשה',
+                    strength: 10,
+                    items: []
+                };
+                this.characters.push(newCharacter);
+                this.saveCharacters();
+                this.render();
+            }
+            
+            selectCharacter(characterId) {
+                this.selectedCharacter = this.characters.find(c => c.id === characterId);
+                this.setView('character-detail');
+            }
+            
+            updateCharacterName(newName) {
+                if (this.selectedCharacter) {
+                    this.selectedCharacter.name = newName;
+                    this.updateCharacterInList();
+                    this.saveCharacters();
+                }
+            }
+            
+            updateCharacterStrength(newStrength) {
+                if (this.selectedCharacter && newStrength > 0) {
+                    this.selectedCharacter.strength = newStrength;
+                    this.updateCharacterInList();
+                    this.saveCharacters();
+                    this.render(); // Re-render to update capacity calculations
+                }
+            }
+            
+            updateCharacterInList() {
+                const index = this.characters.findIndex(c => c.id === this.selectedCharacter.id);
+                if (index !== -1) {
+                    this.characters[index] = { ...this.selectedCharacter };
+                }
+            }
+            
+            deleteCharacter() {
+                if (confirm('האם אתה בטוח שברצונך למחוק את הדמות?')) {
+                    this.characters = this.characters.filter(c => c.id !== this.selectedCharacter.id);
+                    this.saveCharacters();
+                    this.setView('dnd-master');
+                }
+            }
+            
+            removeItem(itemIndex) {
+                if (this.selectedCharacter) {
+                    this.selectedCharacter.items.splice(itemIndex, 1);
+                    this.updateCharacterInList();
+                    this.saveCharacters();
+                    this.render();
+                }
+            }
+            
+            showAddItemModal() {
+                this.showAddItem = true;
+                this.searchTerm = '';
+                this.render();
+            }
+            
+            hideAddItemModal() {
+                this.showAddItem = false;
+                this.render();
+            }
+            
+            updateSearchTerm(term) {
+                this.searchTerm = term;
+                this.render();
+            }
+            
+            addItemToCharacter(itemId) {
+                const item = this.items.find(i => i.id === itemId);
+                if (item && this.selectedCharacter) {
+                    this.selectedCharacter.items.push({ ...item });
+                    this.updateCharacterInList();
+                    this.saveCharacters();
+                    this.hideAddItemModal();
+                }
+            }
+            
+            showCreateNewItem() {
+                const itemName = prompt('שם החפץ:');
+                if (!itemName) return;
+                
+                const itemWeight = parseFloat(prompt('משקל בק"ג:'));
+                if (isNaN(itemWeight) || itemWeight < 0) {
+                    alert('משקל לא תקין');
+                    return;
+                }
+                
+                const newItem = {
+                    id: 'item-' + Date.now(),
+                    name: itemName.trim(),
+                    weight: itemWeight
+                };
+                
+                this.items.push(newItem);
+                this.saveItems();
+                
+                if (this.selectedCharacter) {
+                    this.selectedCharacter.items.push({ ...newItem });
+                    this.updateCharacterInList();
+                    this.saveCharacters();
+                }
+                
+                this.hideAddItemModal();
+            }
+            
+            saveCharacters() {
+                localStorage.setItem('dndCharacters', JSON.stringify(this.characters));
+            }
+            
+            saveItems() {
+                localStorage.setItem('dndItems', JSON.stringify(this.items));
+            }
+        }
+        
+        // Initialize app when page loads
+        let app;
+        document.addEventListener('DOMContentLoaded', () => {
+            app = new PersonalToolsApp();
+        });
+        
+        // Prevent context menu on long press (mobile)
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+        
+        // Handle orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                if (app) app.render();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
